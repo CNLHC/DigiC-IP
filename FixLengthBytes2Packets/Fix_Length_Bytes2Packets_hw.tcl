@@ -127,11 +127,10 @@ set_module_property ELABORATION_CALLBACK elaborate
 # file sets
 # 
 add_fileset synth_fileset QUARTUS_SYNTH generate
-set_fileset_property synth_fileset TOP_LEVEL Fix_Length_Bytes2Packets
 set_fileset_property synth_fileset ENABLE_RELATIVE_INCLUDE_PATHS false
 set_fileset_property synth_fileset ENABLE_FILE_OVERWRITE_MODE true
+set_fileset_property synth_fileset TOP_LEVEL FixLengthB2P
 #add_fileset_file Fix_Length_Bytes2Packets.v VERILOG PATH Fix_Length_Bytes2Packets.v
-add_fileset_file FixLengthB2P.v VERILOG PATH FixLengthB2P.v
 
 
 proc elaborate {} {
@@ -154,8 +153,7 @@ proc generate {entity_name} {
 	set tPacketLength [expr [get_parameter_value SYMBOL_PER_PACKET] ]
 	set tSymbolLength [expr [get_parameter_value BYTES_PER_SYMBOL] ]
 	set tBytesLength  [expr [get_parameter_value BITS_PER_BYTES] ]
-    set tFixedname "Fix_Length_Bytes2Packets"
-    set fileID [open "./Fix_Length_Bytes2Packets.v" r]
+    set fileID [open "./FixLengthB2P.v" r]
     set temp ""
     while {[eof $fileID] != 1} {
         gets $fileID lineInfo
@@ -164,6 +162,6 @@ proc generate {entity_name} {
         regsub -all {\{\{BITS_PER_BYTES\}\}} $lineInfo    [format %d $tBytesLength] lineInfo
         append temp "${lineInfo}\n"
     }
-    add_fileset_file Fix_Length_Bytes2Packets.v VERILOG TEXT $temp
+    add_fileset_file FixLengthB2P.v VERILOG TEXT $temp
 }
 

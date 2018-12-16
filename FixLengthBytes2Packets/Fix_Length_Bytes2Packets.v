@@ -13,12 +13,11 @@ module Fix_Length_Bytes2Packets#(
 		output wire        asi_in0_ready,          
 		input  wire        asi_in0_valid,          
 
-		output wire [BYTES_PER_SYMBOL*BITS_PER_BYTES:0] aso_out0_data,          
+		output wire [BYTES_PER_SYMBOL*BITS_PER_BYTES-1:0] aso_out0_data,          
 		output wire aso_out0_valid,         
 		output wire aso_out0_startofpacket, 
 		output wire aso_out0_endofpacket
 );
-
 
 FixLengthB2P #(
     SYMBOL_PER_PACKET,

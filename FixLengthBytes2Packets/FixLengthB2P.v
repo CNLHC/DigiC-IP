@@ -1,9 +1,9 @@
 
 `timescale 1 ps / 1 ps
 module  FixLengthB2P#(
-parameter SYMBOL_PER_PACKET=256,
-parameter BYTES_PER_SYMBOL=8,
-parameter BITS_PER_BYTES=8
+    parameter SYMBOL_PER_PACKET={{SYMBOL_PER_PACKET}},
+    parameter BYTES_PER_SYMBOL={{BYTES_PER_SYMBOL}},
+    parameter BITS_PER_BYTES={{BITS_PER_BYTES}}
 )
 (
     // Clock and Reset
@@ -14,14 +14,14 @@ parameter BITS_PER_BYTES=8
 		output wire        asi_in0_ready,          
 		input  wire        asi_in0_valid,          
     //Avalon-ST Source
-		output reg         [BYTES_PER_SYMBOL*BITS_PER_BYTES:0] aso_out0_data,          
+		output reg         [BYTES_PER_SYMBOL*BITS_PER_BYTES-1:0] aso_out0_data,          
 		output reg         aso_out0_valid,         
 		output reg         aso_out0_startofpacket, 
 		output reg         aso_out0_endofpacket
 	);
 
-    reg [12:0] tSymbolCounter; //MAX-8191,suitbale for this application.
-    reg [BYTES_PER_SYMBOL/BITS_PER_BYTES:0]  tBytesCounter;
+    reg [$clog2(SYMBOL_PER_PACKET)+1:0] tSymbolCounter; 
+    reg [$clog2(BYTES_PER_SYMBOL)+1:0]  tBytesCounter;
     reg tPacketState;
 
     assign asi_in0_ready =1 ;
@@ -52,7 +52,7 @@ parameter BITS_PER_BYTES=8
                 tSymbolCounter<=tSymbolCounter+1;
                 tBytesCounter<=0;
                 aso_out0_valid<=1;
-                if(tSymbolCounter>SYMBOL_PER_PACKET-1)begin 
+                if(tSymbolCounter>=SYMBOL_PER_PACKET-1)begin 
                     tSymbolCounter<=0;
                     tPacketState<=0;
                     aso_out0_endofpacket<=1;
