@@ -144,8 +144,8 @@ proc elaborate {} {
 	set tSymbolLength [expr [get_parameter_value BYTES_PER_SYMBOL] ]
 	set tBytesLength  [expr [get_parameter_value BITS_PER_BYTES] ]
     set_interface_property asi_in0 dataBitsPerSymbol $tBytesLength
-    set_interface_property aso_out0_1 dataBitsPerSymbol  $tBytesLength*$tSymbolLength
-    set_port_property aso_out0_data WIDTH_EXPR  "$tBytesLength*$tSymbolLength "
+    set_interface_property aso_out0_1 dataBitsPerSymbol  [expr {$tSymbolLength*$tBytesLength}]
+    set_port_property aso_out0_data WIDTH_EXPR  "$tBytesLength*$tSymbolLength"
     set_port_property asi_in0_data WIDTH_EXPR   "$tBytesLength"
 }
 
