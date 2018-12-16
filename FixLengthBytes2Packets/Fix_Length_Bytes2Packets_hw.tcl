@@ -27,15 +27,6 @@ set_module_property ALLOW_GREYBOX_GENERATION false
 set_module_property REPORT_HIERARCHY false
 
 
-# 
-# file sets
-# 
-add_fileset QUARTUS_SYNTH QUARTUS_SYNTH "" ""
-set_fileset_property QUARTUS_SYNTH TOP_LEVEL Fix_Length_Bytes2Packets
-set_fileset_property QUARTUS_SYNTH ENABLE_RELATIVE_INCLUDE_PATHS false
-set_fileset_property QUARTUS_SYNTH ENABLE_FILE_OVERWRITE_MODE true
-add_fileset_file Fix_Length_Bytes2Packets.v VERILOG PATH Fix_Length_Bytes2Packets.v TOP_LEVEL_FILE
-
 
 # 
 # parameters
@@ -132,8 +123,24 @@ add_interface_port aso_out0_1 aso_out0_startofpacket startofpacket Output 1
 add_interface_port aso_out0_1 aso_out0_endofpacket endofpacket Output 1
 
 set_module_property ELABORATION_CALLBACK elaborate
+# 
+# file sets
+# 
+add_fileset synth_fileset QUARTUS_SYNTH generate
+set_fileset_property synth_fileset TOP_LEVEL Fix_Length_Bytes2Packets
+set_fileset_property synth_fileset ENABLE_RELATIVE_INCLUDE_PATHS false
+set_fileset_property synth_fileset ENABLE_FILE_OVERWRITE_MODE true
+#add_fileset_file Fix_Length_Bytes2Packets.v VERILOG PATH Fix_Length_Bytes2Packets.v
+add_fileset_file FixLengthB2P.v VERILOG PATH FixLengthB2P.v
+
 
 proc elaborate {} {
+    set tPythonVersion [exec python --version]
+    if {{string  tPacketLength "\n"} eq ""} {
+            send_message error "Can not find python" 
+        } else  {
+            send_message info "Detected Python Version: $tPythonVersion" 
+    }
 	set tPacketLength [expr [get_parameter_value SYMBOL_PER_PACKET] ]
 	set tSymbolLength [expr [get_parameter_value BYTES_PER_SYMBOL] ]
 	set tBytesLength  [expr [get_parameter_value BITS_PER_BYTES] ]
@@ -141,5 +148,22 @@ proc elaborate {} {
     set_interface_property aso_out0_1 dataBitsPerSymbol  $tBytesLength*$tSymbolLength
     set_port_property aso_out0_data WIDTH_EXPR  "$tBytesLength*$tSymbolLength "
     set_port_property asi_in0_data WIDTH_EXPR   "$tBytesLength"
+}
+
+proc generate {entity_name} {
+	set tPacketLength [expr [get_parameter_value SYMBOL_PER_PACKET] ]
+	set tSymbolLength [expr [get_parameter_value BYTES_PER_SYMBOL] ]
+	set tBytesLength  [expr [get_parameter_value BITS_PER_BYTES] ]
+    set tFixedname "Fix_Length_Bytes2Packets"
+    set fileID [open "./Fix_Length_Bytes2Packets.v" r]
+    set temp ""
+    while {[eof $fileID] != 1} {
+        gets $fileID lineInfo
+        regsub -all {\{\{SYMBOL_PER_PACKET\}\}} $lineInfo [format %d $tPacketLength] lineInfo
+        regsub -all {\{\{BYTES_PER_SYMBOL\}\}} $lineInfo  [format %d $tSymbolLength] lineInfo
+        regsub -all {\{\{BITS_PER_BYTES\}\}} $lineInfo    [format %d $tBytesLength] lineInfo
+        append temp "${lineInfo}\n"
+    }
+    add_fileset_file Fix_Length_Bytes2Packets.v VERILOG TEXT $temp
 }
 
