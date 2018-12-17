@@ -9,8 +9,8 @@ module Packet_Symbol_Width_adapter #(
 		output reg  [OUTPUT_SYMBOL_WIDTH-1:0] aso_out0_data,          
 		input  wire        aso_out0_ready,         
 		output reg         aso_out0_valid,         
-		output wire        aso_out0_endofpacket,   
-		output wire        aso_out0_startofpacket, 
+		output reg         aso_out0_endofpacket,   
+		output reg         aso_out0_startofpacket, 
 
 		input  wire [INPUT_SYMBOL_WIDTH-1:0] asi_in0_data,           
 		output reg         asi_in0_ready,          

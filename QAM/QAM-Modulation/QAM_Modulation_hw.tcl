@@ -160,7 +160,7 @@ proc generate {entity_name} {
     set temp ""
     while {[eof $fileID] != 1} {
         gets $fileID lineInfo
-        regsub -all {parameter.MOD_OUT_WIDTH.=.\d+} $lineInfo  [format {parameter QAM_STAGE=%d} $tOutWidth] lineInfo
+        regsub -all {parameter.MOD_OUT_WIDTH.=.\d+} $lineInfo  [format {parameter MOD_OUT_WIDTH=%d} $tOutWidth] lineInfo
         regsub -all {parameter PIPELINE_DEEPTH=.\d+} $lineInfo [format {parameter PIPELINE_DEEPTH=%d} $tPipe]  lineInfo
         append temp "${lineInfo}\n"
     }

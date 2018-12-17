@@ -149,7 +149,7 @@ add_interface_port aso_out1 aso_out1_startofpacket startofpacket Output 1
 
 # file sets
 # 
-add_fileset QUARTUS_SYNTH QUARTUS_SYNTH "" ""
+add_fileset QUARTUS_SYNTH QUARTUS_SYNTH generate ""
 set_fileset_property QUARTUS_SYNTH TOP_LEVEL Avalon_ST_Demux
 set_fileset_property QUARTUS_SYNTH ENABLE_RELATIVE_INCLUDE_PATHS false
 set_fileset_property QUARTUS_SYNTH ENABLE_FILE_OVERWRITE_MODE true
@@ -176,8 +176,7 @@ proc generate {entity_name} {
     set temp ""
     while {[eof $fileID] != 1} {
         gets $fileID lineInfo
-        regsub -all {parameter INPUT_WIDTH=\d+} $lineInfo {parameter INPUT_WIDTH=[format %d $tWidth]} lineInfo
-    
+        regsub -all {parameter INPUT_WIDTH=\d+} $lineInfo [format {parameter INPUT_WIDTH=%d} $tWidth] lineInfo
         append temp "${lineInfo}\n"
     }
     add_fileset_file Avalon_ST_Demux.v VERILOG TEXT $temp
