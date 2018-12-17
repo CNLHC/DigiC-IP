@@ -1,13 +1,3 @@
-// OFDM_DAC_Control.v
-
-// This file was auto-generated as a prototype implementation of a module
-// created in component editor.  It ties off all outputs to ground and
-// ignores all inputs.  It needs to be edited to make it do something
-// useful.
-// 
-// This file will not be automatically regenerated.  You should check it in
-// to your version control system if you want to keep it.
-
 `timescale 1 ps / 1 ps
 module OFDM_DAC_Control (
 		input  wire [33:0] asi_in0_data,          //      asi_in0.data
@@ -31,8 +21,6 @@ module OFDM_DAC_Control (
     assign tReal=asi_in0_data[33:20];
     assign tImag=asi_in0_data[19:6];
     assign tBFPExp =-asi_in0_data[5:0];
-    //assign tRealExpended=(tReal<<tBFPExp)>>>8;
-    //assign tImagExpended=(tImag<<tBFPExp)>>>8;
     assign tRealExpended=(tReal);
     assign tImagExpended=(tImag);
 

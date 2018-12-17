@@ -34,38 +34,7 @@ set_module_property REPORT_HIERARCHY false
 
 
 # 
-# file sets
-# 
-add_fileset QUARTUS_SYNTH QUARTUS_SYNTH "" ""
-set_fileset_property QUARTUS_SYNTH TOP_LEVEL OFDM_Cyclic_Prefix_Adder
-set_fileset_property QUARTUS_SYNTH ENABLE_RELATIVE_INCLUDE_PATHS false
-set_fileset_property QUARTUS_SYNTH ENABLE_FILE_OVERWRITE_MODE true
-add_fileset_file OFDM_Cyclic_Prefix_Adder.v VERILOG PATH OFDM_Cyclic_Prefix_Adder.v TOP_LEVEL_FILE
 
-
-# 
-# parameters
-# 
-add_parameter Packet_Length POSITIVE 1024 ""
-set_parameter_property Packet_Length DEFAULT_VALUE 1024
-set_parameter_property Packet_Length DISPLAY_NAME Packet_Length
-set_parameter_property Packet_Length WIDTH ""
-set_parameter_property Packet_Length TYPE POSITIVE
-set_parameter_property Packet_Length UNITS None
-set_parameter_property Packet_Length ALLOWED_RANGES 1:2147483647
-set_parameter_property Packet_Length DESCRIPTION ""
-set_parameter_property Packet_Length AFFECTS_GENERATION false
-set_parameter_property Packet_Length HDL_PARAMETER true
-add_parameter CP_Length POSITIVE 128 ""
-set_parameter_property CP_Length DEFAULT_VALUE 128
-set_parameter_property CP_Length DISPLAY_NAME CP_Length
-set_parameter_property CP_Length WIDTH ""
-set_parameter_property CP_Length TYPE POSITIVE
-set_parameter_property CP_Length UNITS None
-set_parameter_property CP_Length ALLOWED_RANGES 1:2147483647
-set_parameter_property CP_Length DESCRIPTION ""
-set_parameter_property CP_Length AFFECTS_GENERATION false
-set_parameter_property CP_Length HDL_PARAMETER true
 
 
 # 
@@ -173,3 +142,65 @@ add_interface_port data_out data_out_error error Output 2
 add_interface_port data_out data_out_endofpacket endofpacket Output 1
 add_interface_port data_out data_out_startofpacket startofpacket Output 1
 
+# 
+# parameters
+# 
+add_parameter Packet_Length POSITIVE 1024 ""
+set_parameter_property Packet_Length DEFAULT_VALUE 1024
+set_parameter_property Packet_Length DISPLAY_NAME Packet_Length
+set_parameter_property Packet_Length WIDTH ""
+set_parameter_property Packet_Length TYPE POSITIVE
+set_parameter_property Packet_Length UNITS None
+set_parameter_property Packet_Length ALLOWED_RANGES 1:2147483647
+set_parameter_property Packet_Length DESCRIPTION ""
+set_parameter_property Packet_Length HDL_PARAMETER true
+add_parameter CP_Length POSITIVE 128 ""
+set_parameter_property CP_Length DEFAULT_VALUE 128
+set_parameter_property CP_Length DISPLAY_NAME CP_Length
+set_parameter_property CP_Length WIDTH ""
+set_parameter_property CP_Length TYPE POSITIVE
+set_parameter_property CP_Length UNITS None
+set_parameter_property CP_Length ALLOWED_RANGES 1:2147483647
+set_parameter_property CP_Length DESCRIPTION ""
+set_parameter_property CP_Length HDL_PARAMETER true
+
+add_parameter INPUT_WIDTH POSITIVE 32 ""
+set_parameter_property INPUT_WIDTH ALLOWED_RANGES 1:64
+
+
+
+# file sets
+# 
+add_fileset QUARTUS_SYNTH QUARTUS_SYNTH  generate ""
+set_fileset_property QUARTUS_SYNTH TOP_LEVEL OFDM_Cyclic_Prefix_Adder
+set_fileset_property QUARTUS_SYNTH ENABLE_RELATIVE_INCLUDE_PATHS false
+set_fileset_property QUARTUS_SYNTH ENABLE_FILE_OVERWRITE_MODE true
+#add_fileset_file OFDM_Cyclic_Prefix_Adder.v VERILOG PATH OFDM_Cyclic_Prefix_Adder.v TOP_LEVEL_FILE
+set_module_property ELABORATION_CALLBACK elaborate
+
+proc elaborate {} {
+	set Packet_Length [expr [get_parameter_value Packet_Length] ]
+	set CP_Length     [expr [get_parameter_value CP_Length] ]
+	set INPUT_WIDTH   [expr [get_parameter_value INPUT_WIDTH] ]
+    set_interface_property buffer_in dataBitsPerSymbol  $INPUT_WIDTH
+    set_interface_property  data_out dataBitsPerSymbol  $INPUT_WIDTH
+    set_interface_property  asi_in0 dataBitsPerSymbol   $INPUT_WIDTH
+    set_port_property data_out_data WIDTH_EXPR          "$INPUT_WIDTH"
+    set_port_property asi_in0_data WIDTH_EXPR           "$INPUT_WIDTH"
+    set_port_property buffer_in_data WIDTH_EXPR         "$INPUT_WIDTH"
+}
+proc generate {entity_name} {
+    set fileID [open "./OFDM_Cyclic_Prefix_Adder.v" r]
+	set Packet_Length [expr [get_parameter_value Packet_Length] ]
+	set CP_Length     [expr [get_parameter_value CP_Length] ]
+	set INPUT_WIDTH   [expr [get_parameter_value INPUT_WIDTH] ]
+    set temp ""
+    while {[eof $fileID] != 1} {
+        gets $fileID lineInfo
+        regsub -all {parameter.Packet_Length.=\d+} $lineInfo  [format {parameter Packet_Length = %d} $Packet_Length] lineInfo
+        regsub -all {parameter.CP_Length.+=.\d+}   $lineInfo  [format {parameter CP_Length = %d}     $CP_Length] lineInfo
+        regsub -all {parameter.INPUT_WIDTH.=.\d+}  $lineInfo  [format {parameter INPUT_WIDTH = %d}   $INPUT_WIDTH] lineInfo
+        append temp "${lineInfo}\n"
+    }
+    add_fileset_file OFDM_Cyclic_Prefix_Adder.v VERILOG TEXT $temp
+}

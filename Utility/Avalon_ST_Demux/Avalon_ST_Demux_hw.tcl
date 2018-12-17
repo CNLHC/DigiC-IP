@@ -23,7 +23,7 @@ set_module_property NAME Avalon_ST_Demux
 set_module_property VERSION 1.0
 set_module_property INTERNAL false
 set_module_property OPAQUE_ADDRESS_MAP true
-set_module_property GROUP DigiC/utility
+set_module_property GROUP DigiC/Utility
 set_module_property AUTHOR CNLHC
 set_module_property DISPLAY_NAME "Avalon ST Demux"
 set_module_property INSTANTIATE_IN_SYSTEM_MODULE true
@@ -33,14 +33,6 @@ set_module_property ALLOW_GREYBOX_GENERATION false
 set_module_property REPORT_HIERARCHY false
 
 
-# 
-# file sets
-# 
-add_fileset QUARTUS_SYNTH QUARTUS_SYNTH "" ""
-set_fileset_property QUARTUS_SYNTH TOP_LEVEL Avalon_ST_Demux
-set_fileset_property QUARTUS_SYNTH ENABLE_RELATIVE_INCLUDE_PATHS false
-set_fileset_property QUARTUS_SYNTH ENABLE_FILE_OVERWRITE_MODE true
-add_fileset_file Avalon_ST_Demux.v VERILOG PATH Avalon_ST_Demux.v TOP_LEVEL_FILE
 
 
 # 
@@ -152,4 +144,42 @@ add_interface_port aso_out1 aso_out1_ready ready Input 1
 add_interface_port aso_out1 aso_out1_valid valid Output 1
 add_interface_port aso_out1 aso_out1_endofpacket endofpacket Output 1
 add_interface_port aso_out1 aso_out1_startofpacket startofpacket Output 1
+
+
+
+# file sets
+# 
+add_fileset QUARTUS_SYNTH QUARTUS_SYNTH "" ""
+set_fileset_property QUARTUS_SYNTH TOP_LEVEL Avalon_ST_Demux
+set_fileset_property QUARTUS_SYNTH ENABLE_RELATIVE_INCLUDE_PATHS false
+set_fileset_property QUARTUS_SYNTH ENABLE_FILE_OVERWRITE_MODE true
+#add_fileset_file Avalon_ST_Demux.v VERILOG PATH Avalon_ST_Demux.v TOP_LEVEL_FILE
+
+add_parameter INPUT_WIDTH INTEGER 32
+set_parameter_property INPUT_WIDTH ALLOWED_RANGES {1:64} 
+
+set_module_property ELABORATION_CALLBACK elaborate
+
+proc elaborate {} {
+	set tWidth [expr [get_parameter_value INPUT_WIDTH] ]
+    set_interface_property asi_in0 dataBitsPerSymbol $tWidth
+    set_interface_property aso_out1 dataBitsPerSymbol $tWidth 
+    set_interface_property aso_out0 dataBitsPerSymbol  $tWidth 
+    set_port_property asi_in0_data WIDTH_EXPR    "$tWidth"
+    set_port_property aso_out0_data WIDTH_EXPR   "$tWidth"
+    set_port_property aso_out1_data WIDTH_EXPR   "$tWidth"
+}
+
+proc generate {entity_name} {
+	set tWidth [expr [get_parameter_value INPUT_WIDTH] ]
+    set fileID [open "./Avalon_ST_Demux.v" r]
+    set temp ""
+    while {[eof $fileID] != 1} {
+        gets $fileID lineInfo
+        regsub -all {parameter INPUT_WIDTH=\d+} $lineInfo {parameter INPUT_WIDTH=[format %d $tWidth]} lineInfo
+    
+        append temp "${lineInfo}\n"
+    }
+    add_fileset_file Avalon_ST_Demux.v VERILOG TEXT $temp
+}
 
