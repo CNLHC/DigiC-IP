@@ -19,7 +19,7 @@ add_parameter INVERSE_FFT INTEGER  0 "Assert it while using IFFT instead of FFT"
 set_parameter_property INVERSE_FFT ALLOWED_RANGES {0,1} 
 
 add_parameter INPUT_SYMBOL_WIDTH INTEGER  32 "Input data with(bits per symbol)"
-set_parameter_property INPUT_SYMBOL_WIDTH ALLOWED_RANGES {16,20,24,28,32}
+set_parameter_property INPUT_SYMBOL_WIDTH ALLOWED_RANGES {16,20,24,28,32,64}
 
 
 

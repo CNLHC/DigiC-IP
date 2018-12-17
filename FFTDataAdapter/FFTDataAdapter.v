@@ -2,6 +2,8 @@ module FFTDataAdapter#(
     parameter INVERSE_FFT={{INVERSE_FFT}},
     parameter INPUT_SYMBOL_WIDTH={{INPUT_SYMBOL_WIDTH}}
 )(
+    input wire clock_clk,
+    input wire reset_reset,
     input wire   [INPUT_SYMBOL_WIDTH-1:0]      asi_in_data ,
     input wire          asi_in_valid ,
     input wire          asi_in_startofpacket,
