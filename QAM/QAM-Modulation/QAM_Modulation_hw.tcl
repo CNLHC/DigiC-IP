@@ -49,7 +49,7 @@ set_parameter_property MOD_OUT_WIDTH DEFAULT_VALUE 8
 set_parameter_property PIPELINE_DEEPTH DEFAULT_VALUE 16
 
 set_parameter_property QAM_STAGE ALLOWED_RANGES {4}
-set_parameter_property MOD_OUT_WIDTH  ALLOWED_RANGES {4:16}
+set_parameter_property MOD_OUT_WIDTH  ALLOWED_RANGES {2:16}
 set_parameter_property PIPELINE_DEEPTH ALLOWED_RANGES {1:32}
 
 # 
@@ -130,7 +130,6 @@ set_interface_property aso_out0 SVD_ADDRESS_GROUP ""
 add_interface_port aso_out0 aso_out0_data data Output 17
 add_interface_port aso_out0 aso_out0_ready ready Input 1
 add_interface_port aso_out0 aso_out0_valid valid Output 1
-add_interface_port aso_out0 aso_out0_empty empty Output 1
 add_interface_port aso_out0 aso_out0_endofpacket endofpacket Output 1
 add_interface_port aso_out0 aso_out0_startofpacket startofpacket Output 1
 
