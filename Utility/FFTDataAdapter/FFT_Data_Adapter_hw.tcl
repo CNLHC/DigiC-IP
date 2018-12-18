@@ -19,8 +19,10 @@ add_parameter INVERSE_FFT INTEGER  0 "Assert it while using IFFT instead of FFT"
 set_parameter_property INVERSE_FFT ALLOWED_RANGES {0,1} 
 
 add_parameter INPUT_SYMBOL_WIDTH INTEGER  32 "Input data with(bits per symbol)"
-set_parameter_property INPUT_SYMBOL_WIDTH ALLOWED_RANGES {16,20,24,28,32,64}
+set_parameter_property INPUT_SYMBOL_WIDTH ALLOWED_RANGES {1:64}
 
+add_parameter EXTRA_LEFT_PADDING INTEGER  0 "Input data with(bits per symbol)"
+add_parameter EXTRA_RIGHT_PADDING INTEGER  0 "Input data with(bits per symbol)"
 
 
 # connection point reset
@@ -98,20 +100,26 @@ set_module_property ELABORATION_CALLBACK elaborate
 proc elaborate {} {
 	set tInverse [expr [get_parameter_value INVERSE_FFT ] ]
 	set tWidth [expr [get_parameter_value INPUT_SYMBOL_WIDTH] ]
-    set_interface_property asi_in dataBitsPerSymbol $tWidth
-    set_interface_property aso_out dataBitsPerSymbol [expr {1+$tWidth}]
-    set_port_property asi_in_data WIDTH_EXPR   "$tWidth"
-    set_port_property aso_out_data WIDTH_EXPR  "$tWidth+1"
+	set tWLeft [expr [get_parameter_value EXTRA_LEFT_PADDING] ]
+	set tWRight [expr [get_parameter_value EXTRA_RIGHT_PADDING] ]
+    set_interface_property asi_in dataBitsPerSymbol [expr {$tWidth*2}]
+    set_interface_property aso_out dataBitsPerSymbol [expr {1+($tWidth*2)+(2*$tWRight)+(2*$tWLeft)}]
+    set_port_property asi_in_data WIDTH_EXPR   "$tWidth*2"
+    set_port_property aso_out_data WIDTH_EXPR  "($tWidth*2)+1+(2*$tWRight)+(2*$tWLeft)"
 }
 proc generate {entity_name} {
 	set tInverse [expr [get_parameter_value INVERSE_FFT ] ]
 	set tWidth [expr [get_parameter_value INPUT_SYMBOL_WIDTH] ]
+	set tWLeft [expr [get_parameter_value EXTRA_LEFT_PADDING] ]
+	set tWRight [expr [get_parameter_value EXTRA_RIGHT_PADDING] ]
     set fileID [open "./FFTDataAdapter.v" r]
     set temp ""
     while {[eof $fileID] != 1} {
         gets $fileID lineInfo
         regsub -all {\{\{INVERSE_FFT\}\}} $lineInfo [format %d $tInverse] lineInfo
         regsub -all {\{\{INPUT_SYMBOL_WIDTH\}\}} $lineInfo  [format %d $tWidth] lineInfo
+        regsub -all {\{\{EXTRA_LEFT_PADDING\}\}} $lineInfo  [format %d $tWLeft] lineInfo
+        regsub -all {\{\{EXTRA_RIGHT_PADDING\}\}} $lineInfo  [format %d $tWRight] lineInfo
         append temp "${lineInfo}\n"
     }
     add_fileset_file FFTDataAdapter.v VERILOG TEXT $temp
