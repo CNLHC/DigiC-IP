@@ -53,7 +53,7 @@ module Packet_Symbol_Width_adapter #(
                             tPacketingState<=1;
                         end
                         aso_out0_valid <=1;
-                        aso_out0_data  <= tInputSymbolBuffer[(`O_SYMBOL_LENGTH-tOBytesCounter)*INPUT_SYMBOL_WIDTH-1-:INPUT_SYMBOL_WIDTH];
+                        aso_out0_data  <= tInputSymbolBuffer[(`O_SYMBOL_LENGTH-tOBytesCounter)*OUTPUT_SYMBOL_WIDTH-1-:OUTPUT_SYMBOL_WIDTH];
                         tOBytesCounter<=tOBytesCounter+1;
                         tOSymbolCounter<=tOSymbolCounter+1;
                     end
@@ -73,7 +73,7 @@ module Packet_Symbol_Width_adapter #(
                 2:begin
                     if(tOBytesCounter<`O_SYMBOL_LENGTH)begin
                         aso_out0_valid <=1;
-                        aso_out0_data  <= tInputSymbolBuffer[(`O_SYMBOL_LENGTH-tOBytesCounter)*INPUT_SYMBOL_WIDTH-1-:INPUT_SYMBOL_WIDTH];
+                        aso_out0_data  <= tInputSymbolBuffer[(`O_SYMBOL_LENGTH-tOBytesCounter)*OUTPUT_SYMBOL_WIDTH-1-:OUTPUT_SYMBOL_WIDTH];
                         tOBytesCounter<=tOBytesCounter+1;
                         tOSymbolCounter<=tOSymbolCounter+1;
                         if(tOBytesCounter==`O_SYMBOL_LENGTH-1)

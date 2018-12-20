@@ -62,7 +62,6 @@ module FFTDataAdapter#(
 
     assign aso_out_data[0] = INVERSE_FFT;
 
-
 endmodule
 
 

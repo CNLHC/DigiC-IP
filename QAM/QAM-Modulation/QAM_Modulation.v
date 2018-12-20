@@ -1,4 +1,6 @@
 `timescale 1 ps / 1 ps
+`define QAM_INPUT_WIDTH (PIPELINE_DEEPTH*$clog2(QAM_STAGE))
+`define QAM_OUT_WIDTH (PIPELINE_DEEPTH*MOD_OUT_WIDTH*2)
 module QAM_Modulation #(
         parameter QAM_STAGE = 4,
         parameter MOD_OUT_WIDTH = 8,
@@ -23,7 +25,7 @@ module QAM_Modulation #(
     genvar i;
     generate        
         for (i = 0; i < PIPELINE_DEEPTH ; i=i+1) begin: generate_block
-              assign aso_out0_data[((i+1)*MOD_OUT_WIDTH*2)-1-:MOD_OUT_WIDTH*2]  = QAM_4_MAPPER(asi_in0_data[(i+1)*$clog2(QAM_STAGE)-1-:$clog2(QAM_STAGE)]);
+              assign aso_out0_data[`QAM_OUT_WIDTH-(i*MOD_OUT_WIDTH*2)-1-:MOD_OUT_WIDTH*2]  = QAM_4_MAPPER(asi_in0_data[`QAM_INPUT_WIDTH-(i*$clog2(QAM_STAGE))-1-:$clog2(QAM_STAGE)]);
         end
     endgenerate 
     assign aso_out0_endofpacket = asi_in0_endofpacket;
