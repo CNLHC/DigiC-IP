@@ -39,11 +39,13 @@ module OFDM_Cyclic_Prefix_Adder #(
     reg [3:0]tInnerState;
     reg tCheckDataInputAlignFlag;
     reg [13:0]tWatchDog;
+    reg tPacketState;
 
     always @(posedge reset_reset or posedge clock_clk)begin 
         if(reset_reset)begin
             tDataSymbolCounter<=0;
             tInnerState<=0;
+            tPacketState<=0;
         end
         else begin
             case(tInnerState)
@@ -66,9 +68,6 @@ module OFDM_Cyclic_Prefix_Adder #(
 
                     if(tDataSymbolCounter>=Packet_Length-CP_Length-1)begin
                         tInnerState<=2;
-                        data_out_startofpacket<=1;
-                        data_out_data<=asi_in0_data;
-                        data_out_valid<=1;
                     end
                     else begin
                         data_out_valid<=0;
@@ -82,10 +81,15 @@ module OFDM_Cyclic_Prefix_Adder #(
                     buffer_in_ready<=0; 
                     data_out_error<=0;
                     if(asi_in0_valid)begin
+                        if(!tPacketState)begin
+                            data_out_startofpacket<=1;
+                            tPacketState<=1;
+                        end
+                        data_out_valid<=1;
                         tDataSymbolCounter<=tDataSymbolCounter+1;
                         data_out_data<=asi_in0_data;
                     end
-                    if(tDataSymbolCounter>=Packet_Length-2)begin
+                    if(tDataSymbolCounter>=Packet_Length-1)begin
                         tInnerState<=3;
                         tDataSymbolCounter<=0;
                         tCheckDataInputAlignFlag<=0;
@@ -114,12 +118,13 @@ module OFDM_Cyclic_Prefix_Adder #(
                     if(tWatchDog>Packet_Length)
                         tInnerState<=0;
 
-                    if(tDataSymbolCounter>=Packet_Length-2)begin
+                    if(tDataSymbolCounter>=Packet_Length-1)begin
                         data_out_endofpacket<=1;
                     end
 
                     if (data_out_endofpacket) begin // The Last Frame of output must align to the last frame to the fifo output
                         data_out_endofpacket<=0;
+                        tPacketState<=0;
                         data_out_valid<=0;
                         tInnerState<=0;
                         if(!buffer_in_endofpacket)
