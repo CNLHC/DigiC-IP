@@ -126,8 +126,6 @@ set_interface_property asi_in_0 SVD_ADDRESS_GROUP ""
 
 add_interface_port asi_in_0 asi_in0_data data Input 32
 add_interface_port asi_in_0 asi_in0_valid valid Input 1
-add_interface_port asi_in_0 asi_in0_endofpacket endofpacket Input 1
-add_interface_port asi_in_0 asi_in0_startofpacket startofpacket Input 1
 
 
 # 
