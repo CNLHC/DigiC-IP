@@ -57,7 +57,7 @@ add_fileset_file OFDM_ADC_Control.v VERILOG PATH OFDM_ADC_Control.v TOP_LEVEL_FI
 # connection point aso_out0
 # 
 add_interface aso_out0 avalon_streaming start
-set_interface_property aso_out0 associatedClock clock_1
+set_interface_property aso_out0 associatedClock clock_2
 set_interface_property aso_out0 associatedReset reset
 set_interface_property aso_out0 dataBitsPerSymbol 32
 set_interface_property aso_out0 errorDescriptor ""
@@ -80,7 +80,7 @@ add_interface_port aso_out0 aso_out0_startofpacket startofpacket Output 1
 # connection point reset
 # 
 add_interface reset reset end
-set_interface_property reset associatedClock clock_1
+set_interface_property reset associatedClock clock_2
 set_interface_property reset synchronousEdges DEASSERT
 set_interface_property reset ENABLED true
 set_interface_property reset EXPORT_OF ""
@@ -95,7 +95,7 @@ add_interface_port reset reset_reset reset Input 1
 # connection point clock_1
 # 
 add_interface clock_1 clock end
-set_interface_property clock_1 clockRate 0
+set_interface_property clock_1 clockRate 20000000
 set_interface_property clock_1 ENABLED true
 set_interface_property clock_1 EXPORT_OF ""
 set_interface_property clock_1 PORT_NAME_MAP ""
@@ -103,6 +103,19 @@ set_interface_property clock_1 CMSIS_SVD_VARIABLES ""
 set_interface_property clock_1 SVD_ADDRESS_GROUP ""
 
 add_interface_port clock_1 sampling_clk clk Input 1
+
+# 
+# connection point clock_2
+# 
+add_interface clock_2 clock end
+set_interface_property clock_2 clockRate 200000000
+set_interface_property clock_2 ENABLED true
+set_interface_property clock_2 EXPORT_OF ""
+set_interface_property clock_2 PORT_NAME_MAP ""
+set_interface_property clock_2 CMSIS_SVD_VARIABLES ""
+set_interface_property clock_2 SVD_ADDRESS_GROUP ""
+
+add_interface_port clock_2 oversampling_clk clk Input 1
 
 
 # 
