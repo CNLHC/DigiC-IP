@@ -4,7 +4,7 @@ module OFDM_DAC_Control (
 		output wire        asi_in0_ready,         //             .ready
 		input  wire        asi_in0_valid,         //             .valid
         input  wire        asi_in0_startofpacket,
-        input wire         asi_in0_endofpacket,
+        input  wire        asi_in0_endofpacket,
 		input  wire        reset_reset,           //        reset.reset
 
 		output reg  [13:0] DAC_Control_ChA_Data,  //  DAC_Control.chadata
@@ -32,8 +32,8 @@ module OFDM_DAC_Control (
             DAC_Control_ChB_Data=-8191;
             end
             1: begin
-            DAC_Control_ChA_Data={~tRealExpended[13],tRealExpended[12:0]};
-            DAC_Control_ChB_Data={~tImagExpended[13],tImagExpended[12:0]};
+            DAC_Control_ChA_Data={~tRealExpended[11],tRealExpended[10:0],2'b0};
+            DAC_Control_ChB_Data={~tImagExpended[11],tImagExpended[10:0],2'b0};
             end
         endcase
     end

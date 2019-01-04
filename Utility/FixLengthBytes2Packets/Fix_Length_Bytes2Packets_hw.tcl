@@ -32,7 +32,7 @@ set_module_property REPORT_HIERARCHY false
 # parameters
 # 
 add_parameter SYMBOL_PER_PACKET INTEGER  256 "How many symbols does one packet contain"
-set_parameter_property SYMBOL_PER_PACKET ALLOWED_RANGES {16,32,64,128,256,512,1024} 
+set_parameter_property SYMBOL_PER_PACKET ALLOWED_RANGES {4,8,16,32,64,128,256,512,1024} 
 
 add_parameter BYTES_PER_SYMBOL INTEGER  4 "How many bytes does one symbol contain"
 set_parameter_property BYTES_PER_SYMBOL ALLOWED_RANGES {1,2,3,4,5,6,7,8}
