@@ -48,27 +48,6 @@ add_fileset_file OFDM_Symbol_Sync.v VERILOG PATH OFDM_Symbol_Sync.v TOP_LEVEL_FI
 # 
 
 
-# 
-# display items
-# 
-
-
-# 
-# connection point reset_source
-# 
-add_interface reset_source reset start
-set_interface_property reset_source associatedClock clock
-set_interface_property reset_source associatedDirectReset ""
-set_interface_property reset_source associatedResetSinks ""
-set_interface_property reset_source synchronousEdges DEASSERT
-set_interface_property reset_source ENABLED true
-set_interface_property reset_source EXPORT_OF ""
-set_interface_property reset_source PORT_NAME_MAP ""
-set_interface_property reset_source CMSIS_SVD_VARIABLES ""
-set_interface_property reset_source SVD_ADDRESS_GROUP ""
-
-add_interface_port reset_source sample_clock_reset reset Output 1
-
 
 # 
 # connection point clock

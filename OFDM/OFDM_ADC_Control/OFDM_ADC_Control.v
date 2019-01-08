@@ -20,26 +20,35 @@ module OFDM_ADC_Control (
         input  wire         pre_sampling
 	);
     reg tSampleSended;
-    always @(posedge sampling_clk or posedge reset_reset or posedge oversampling_clk) begin
+    always @(posedge reset_reset or posedge oversampling_clk) begin
         if(reset_reset)begin
             aso_out0_data<=0;
             aso_out0_valid<=0;
+            tSampleSended<=1;
         end
         else begin
-            if(pre_sampling)begin
-                if(sampling_clk&&(!tSampleSended)) begin
-                    tSampleSended<=1;
+            if(oversampling_clk) begin
+                if(!pre_sampling)begin
+                    if(sampling_clk) begin
+                        if(!tSampleSended) begin
+                            aso_out0_valid<=1;
+                            aso_out0_data<={{2{adc_data_Real[13]}},adc_data_Real,{2{adc_data_Imag[13]}},adc_data_Imag};
+                            tSampleSended<=1;
+                        end
+                        else begin
+                            if(aso_out0_valid)
+                                aso_out0_valid<=0;
+                        end
+                    end
+                    else begin
+                        aso_out0_valid<=0;
+                        tSampleSended<=0;
+                    end
+                end else begin
                     aso_out0_valid<=1;
+                    tSampleSended<=1;
                     aso_out0_data<={{2{adc_data_Real[13]}},adc_data_Real,{2{adc_data_Imag[13]}},adc_data_Imag};
                 end
-                else begin
-                    tSampleSended<=0;
-                    if(aso_out0_valid)
-                        aso_out0_valid<=0;
-                end
-            end else begin
-                aso_out0_valid<=1;
-                aso_out0_data<={{2{adc_data_Real[13]}},adc_data_Real,{2{adc_data_Imag[13]}},adc_data_Imag};
             end
         end
     end
