@@ -82,6 +82,8 @@ module OFDM_Symbol_Sync #(
                             if(tMADifference>THRESHOLD)begin
                                 pre_sampling<=0;
                                 tInnerState<=1;
+                                aso_out0_valid<=1;
+                                aso_out0_startofpacket<=1;
                             end
                         end else begin
                             tMA4Accu<=tMA4Accu+tSyncChannelData;
@@ -100,18 +102,23 @@ module OFDM_Symbol_Sync #(
                     end
                 end
                 1:begin
-                    pre_sampling<=0; 
-                    if(!tSlackState)
-                        tSlackState<=1;
+                    if(aso_out0_valid) begin
+                        aso_out0_valid<=0;
+                    end
+                    else begin
+                        if(asi_in0_valid)
+                            aso_out0_valid<=1;
+                    end
 
-                    if(asi_in0_valid&&tSlackState)begin
+                    if(aso_out0_startofpacket)
+                        aso_out0_startofpacket<=0;
+
+                    if(asi_in0_valid)begin
                         if(!tPacketState)begin
                             aso_out0_startofpacket<=1;
                             tPacketState<=1;
                         end
                         aso_out0_data={{16'b0-asiReal},{16'b0-asiImag}};
-                        if(aso_out0_startofpacket)
-                            aso_out0_startofpacket<=0;
 
                         if(tDataCounter==OFDM_SYMBOL_LENGTH-1)begin
                             aso_out0_endofpacket<=1;
@@ -136,7 +143,6 @@ module OFDM_Symbol_Sync #(
                             tIDLECounter<=0;
                         end
                         else begin
-                            aso_out0_valid<=1;
                             tDataCounter<=tDataCounter+1;
                         end
                     end

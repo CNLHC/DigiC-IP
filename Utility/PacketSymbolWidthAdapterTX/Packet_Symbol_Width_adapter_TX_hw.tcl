@@ -19,13 +19,13 @@ package require -exact qsys 16.1
 # module Packet_Symbol_Width_adapter
 # 
 set_module_property DESCRIPTION ""
-set_module_property NAME Packet_Symbol_Width_adapter
+set_module_property NAME Packet_Symbol_Width_adapter_tx
 set_module_property VERSION 1.0
 set_module_property INTERNAL false
 set_module_property OPAQUE_ADDRESS_MAP true
 set_module_property GROUP DigiC/Utility
 set_module_property AUTHOR CNLHC
-set_module_property DISPLAY_NAME "Packet Symbol Width Adapter"
+set_module_property DISPLAY_NAME "Packet Symbol Width Adapter TX"
 set_module_property INSTANTIATE_IN_SYSTEM_MODULE true
 set_module_property EDITABLE true
 set_module_property REPORT_TO_TALKBACK false
@@ -86,7 +86,7 @@ set_interface_property aso_out0 PORT_NAME_MAP ""
 set_interface_property aso_out0 CMSIS_SVD_VARIABLES ""
 set_interface_property aso_out0 SVD_ADDRESS_GROUP ""
 
-add_interface_port aso_out0 aso_out0_data data Output 8
+add_interface_port aso_out0 aso_out0_data data Output 32
 add_interface_port aso_out0 aso_out0_ready ready Input 1
 add_interface_port aso_out0 aso_out0_valid valid Output 1
 add_interface_port aso_out0 aso_out0_endofpacket endofpacket Output 1
@@ -119,7 +119,7 @@ add_interface_port asi_in0 asi_in0_startofpacket startofpacket Input 1
 # file sets
 # 
 add_fileset QUARTUS_SYNTH QUARTUS_SYNTH generate ""
-set_fileset_property QUARTUS_SYNTH TOP_LEVEL Packet_Symbol_Width_adapter
+set_fileset_property QUARTUS_SYNTH TOP_LEVEL Packet_Symbol_Width_adapter_TX
 set_fileset_property QUARTUS_SYNTH ENABLE_RELATIVE_INCLUDE_PATHS false
 set_fileset_property QUARTUS_SYNTH ENABLE_FILE_OVERWRITE_MODE true
 #add_fileset_file Packet_Symbol_Width_adapter.v VERILOG PATH Packet_Symbol_Width_adapter.v TOP_LEVEL_FILE
@@ -139,6 +139,7 @@ set_parameter_property OUTPUT_SYMBOL_WIDTH UNITS None
 set_parameter_property OUTPUT_SYMBOL_WIDTH ALLOWED_RANGES 1:256
 set_parameter_property OUTPUT_SYMBOL_WIDTH DESCRIPTION ""
 
+
 set_module_property ELABORATION_CALLBACK elaborate
 
 proc elaborate {} {
@@ -152,7 +153,7 @@ proc elaborate {} {
 proc generate {entity_name} {
 	set tIW [expr [get_parameter_value INPUT_SYMBOL_WIDTH] ]
 	set tOW [expr [get_parameter_value OUTPUT_SYMBOL_WIDTH] ]
-    set fileID [open "./Packet_Symbol_Width_adapter.v" r]
+    set fileID [open "./Packet_Symbol_Width_adapter_TX.v" r]
     set temp ""
     while {[eof $fileID] != 1} {
         gets $fileID lineInfo
@@ -160,6 +161,6 @@ proc generate {entity_name} {
         regsub -all {parameter OUTPUT_SYMBOL_WIDTH.*\d+} $lineInfo  [format {parameter OUTPUT_SYMBOL_WIDTH=%d} $tOW] lineInfo
         append temp "${lineInfo}\n"
     }
-    add_fileset_file Packet_Symbol_Width_adapter.v VERILOG TEXT $temp
+    add_fileset_file "Packet_Symbol_Width_adapter_TX.v" VERILOG TEXT $temp
 }
 

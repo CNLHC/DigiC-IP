@@ -69,7 +69,7 @@ add_interface_port clock clock_clk clk Input 1
 add_interface aso_out0 avalon_streaming start
 set_interface_property aso_out0 associatedClock clock
 set_interface_property aso_out0 associatedReset reset_sink
-set_interface_property aso_out0 dataBitsPerSymbol 8
+set_interface_property aso_out0 dataBitsPerSymbol 32
 set_interface_property aso_out0 errorDescriptor ""
 set_interface_property aso_out0 firstSymbolInHighOrderBits true
 set_interface_property aso_out0 maxChannel 0

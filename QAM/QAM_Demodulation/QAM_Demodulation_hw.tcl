@@ -59,7 +59,7 @@ add_fileset_file QAM_Demodulation.v VERILOG PATH QAM_Demodulation.v TOP_LEVEL_FI
 add_interface asi_in0 avalon_streaming end
 set_interface_property asi_in0 associatedClock clock
 set_interface_property asi_in0 associatedReset reset
-set_interface_property asi_in0 dataBitsPerSymbol 32
+set_interface_property asi_in0 dataBitsPerSymbol 38
 set_interface_property asi_in0 errorDescriptor ""
 set_interface_property asi_in0 firstSymbolInHighOrderBits true
 set_interface_property asi_in0 maxChannel 0
@@ -70,7 +70,7 @@ set_interface_property asi_in0 PORT_NAME_MAP ""
 set_interface_property asi_in0 CMSIS_SVD_VARIABLES ""
 set_interface_property asi_in0 SVD_ADDRESS_GROUP ""
 
-add_interface_port asi_in0 asi_in0_data data Input 32
+add_interface_port asi_in0 asi_in0_data data Input 38
 add_interface_port asi_in0 asi_in0_ready ready Output 1
 add_interface_port asi_in0 asi_in0_valid valid Input 1
 add_interface_port asi_in0 asi_in0_endofpacket endofpacket Input 1
@@ -112,7 +112,7 @@ add_interface_port reset reset_reset reset Input 1
 add_interface aso_out0 avalon_streaming start
 set_interface_property aso_out0 associatedClock clock
 set_interface_property aso_out0 associatedReset reset
-set_interface_property aso_out0 dataBitsPerSymbol 8
+set_interface_property aso_out0 dataBitsPerSymbol 2
 set_interface_property aso_out0 errorDescriptor ""
 set_interface_property aso_out0 firstSymbolInHighOrderBits true
 set_interface_property aso_out0 maxChannel 0
@@ -123,7 +123,7 @@ set_interface_property aso_out0 PORT_NAME_MAP ""
 set_interface_property aso_out0 CMSIS_SVD_VARIABLES ""
 set_interface_property aso_out0 SVD_ADDRESS_GROUP ""
 
-add_interface_port aso_out0 aso_out0_data data Output 32
+add_interface_port aso_out0 aso_out0_data data Output 2
 add_interface_port aso_out0 aso_out0_ready ready Input 1
 add_interface_port aso_out0 aso_out0_valid valid Output 1
 add_interface_port aso_out0 aso_out0_endofpacket endofpacket Output 1
