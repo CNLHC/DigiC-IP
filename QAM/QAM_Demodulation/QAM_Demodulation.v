@@ -14,16 +14,16 @@ module QAM_Demodulation (
         //Avalon Source
 		output reg  [1:0] aso_out0_data,  
 		input  wire        aso_out0_ready, 
-		output wire aso_out0_valid,  
-        output wire aso_out0_startofpacket,
-        output wire aso_out0_endofpacket
+		output wire aso_out0_valid 
+        //output wire aso_out0_startofpacket,
+        //output wire aso_out0_endofpacket
 	);
     wire signed [15:0]realInput;
     wire signed [15:0]imagInput;
     assign realInput=asi_in0_data[37:22];
     assign imagInput=asi_in0_data[21:6];
-    assign aso_out0_startofpacket=asi_in0_startofpacket;
-    assign aso_out0_endofpacket = asi_in0_endofpacket;
+    //assign aso_out0_startofpacket=asi_in0_startofpacket;
+    //assign aso_out0_endofpacket = asi_in0_endofpacket;
     assign aso_out0_valid = asi_in0_valid;
     assign asi_in0_ready = aso_out0_ready;
     always @(*) begin
