@@ -4,7 +4,7 @@
 `define SYMBOL_DECISION_THRESHOLD 14'h1fff 
 `timescale 1 ps / 1 ps
 module OFDM_Symbol_Sync #(
-    THRESHOLD=50,
+    THRESHOLD=100,
     OFDM_SYMBOL_LENGTH=64
 
 ) (
@@ -131,6 +131,12 @@ module OFDM_Symbol_Sync #(
                             tMA4Accu<=tMA4Accu+tSyncChannelData;
                             tMA4Index<=tMA4Index+1;
                         end
+                        //if(tSyncChannelData>THRESHOLD&&tMA32Settd==1)begin
+                        //    pre_sampling<=0;
+                        //    tInnerState<=1;
+                        //    aso_out0_valid<=1;
+                        //    aso_out0_startofpacket<=1;
+                        //end
 
                         if (tMA32Index==31)begin
                             tAccuFlag<=1;
@@ -158,6 +164,12 @@ module OFDM_Symbol_Sync #(
                             tMA4C2Accu<=tMA4C2Accu+tSyncChannelDataC2;
                             tMA4C2Index<=tMA4C2Index+1;
                         end
+                        //if(tSyncChannelDataC2>THRESHOLD&&tMA32C2Settd==1)begin
+                        //    pre_sampling<=0;
+                        //    tInnerState<=1;
+                        //    aso_out0_valid<=1;
+                        //    aso_out0_startofpacket<=1;
+                        //end
 
                         if (tMA32C2Index==31)begin
                             tAccuFlagC2<=1;
